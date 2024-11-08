@@ -6,6 +6,10 @@ dot = 0
 current_value = "0"
 result_now = ""
 value_equation=""
+first_number = 0
+second_number = 0
+out_operator = ""
+the_equal = 0
 
 def input_number(number_cal:str):#เอางี้เผื่อมึนคือเราส่งค่าที่ฟังชั่นก่อนตอนกด จากนั้นก็เพิ่มตัวหลัง ไอc ค่อยคิด
     global current_value
@@ -35,9 +39,22 @@ def output_equation():
 def C_number(C_cal:str):
     global current_value
     global value_equation
+    global first_number 
+    global  second_number 
+    global dot
+    global result_now
+    global out_operator
+    global the_equal
     if C_cal == "C":
+        dot = 0
         current_value = "0"
-        value_equation = ""
+        result_now = ""
+        value_equation=""
+        first_number = 0
+        second_number = 0
+        out_operator = ""
+        the_equal = 0
+
     output_equation()
     output_number()
 
@@ -46,22 +63,119 @@ def delete_number(delete_cal:str):
     if delete_cal == "<":#เราจะให้มันลบถ้าเป็น0เป็น0เหมือนเดิม พอลบตัวเลข ตัวหลังสุดจะหาย แล้วก็ทศนิยมจะหายถ้าลบไม่ใช่ตัวเลข
         #current_value #นับเลขยังไงวะ แบบว่ามีทั้งหมด5ตัวตัวอักษร lenมะ
         current_value = current_value[0:len(current_value)- 1]
+    elif current_value == "0":
+        pass
     output_number()
     
 #โอเค บีม ใจเย็นๆเราไม่ต้องทำหมดให้เสร็จภายในคราวเดียว คิดที่ละขั้นละตอน แล้วโฟกัสที่ละขั้นละตอนพอ ไม่ต้องคิดเยอะเกินไป
 #ตอนนี้ที่ต้องทำคือพิมสมการแล้วให้มันขึ้นในdisplayเล็กก่อน
-def equation_display(operator:str):
+def equation_display(operator:str):#อันนี้คือเวลากด + - * /
     global current_value
     global value_equation
-    value_equation = current_value + operator
-    current_value = "0"
+    global first_number
+    global out_operator
+    global second_number
+    
+    if  value_equation == "":#ถ้าไม่มีอะไรในสมการมันจะแค่เอาสมการมาต่อ แล้วก็เอาตัวเลขที่กดก่อนเครื่องหมายไปเก็บค่าเอาไว้
+        value_equation = current_value + operator
+        first_number = eval(current_value)
+        out_operator = operator
+        current_value = "0"
+        output_equation()
+    else:
+        #แล้วถ้ามันดันมีสมการจะทำงานตามนี้ โอเค เราใช้ = มาแทนไม่ได้
+        if eval(current_value) != 0: #ถ้าเลขปัจจุบันไม่เท่ากับ0
+            second_number = eval(current_value)
+            if out_operator == "+":
+                current_value = first_number + second_number
+            elif out_operator == "-":
+                current_value = first_number - second_number
+            elif out_operator == "*":
+                current_value = first_number * second_number
+            elif out_operator == "/":
+                current_value = first_number / second_number
+
+            out_operator = operator
+            current_value = str(current_value)
+            first_number = eval(current_value)
+            value_equation = str(first_number) + operator#เย่ บวกได้และ
+           
+            output_equation()
+            output_number()
+            current_value = "0"
+            second_number = 0
+        else:
+            out_operator = operator
+            current_value = str(current_value)
+            value_equation = str(first_number) + operator#เย่ บวกได้และ
+            output_equation()
+            #ใส่ตรงนี้ทำไมวะ
+            
+        
+#ปัญหามันอยู่ที่value_equation
+def equals_number(equal:str):#ก็คือกดปุป = จะขึ้นไปด้านบนสมการ แล้วก็คำตอบจะกลายร่างเป็นเครื่องหมายนั้นๆทำกัน
+    global current_value
+    global value_equation
+    global second_number
+    global first_number
+    global out_operator
+    global the_equal
+    if second_number == 0:
+        second_number = eval(current_value)
+    else:
+        first_number = eval(current_value)
+    if the_equal == 0:#if elseตรงนี้เพื่ออะไรแล้วนะ
+        value_equation = value_equation +current_value +equal#โอเคมันขึ้นแล้วแต่บวก ลบ คูณ หาร ยังไง วะ 
+        the_equal = the_equal + 1
+    elif the_equal == 1:
+        value_equation = str(first_number) + str(out_operator)+ str(second_number) + equal
+
+
+    #ที่แน่ๆคือเราต้องแยกตัวเลข2ตัว นั้นชัวๆ ต้องทำยังไงละ
+    if out_operator == "+":
+        current_value = first_number + second_number
+    elif out_operator == "-":
+        current_value = first_number - second_number
+    elif out_operator == "*":
+        current_value = first_number * second_number
+    elif out_operator == "/":
+        current_value = first_number / second_number
+    elif out_operator == "":
+        value_equation = current_value + equal
+    print(out_operator)
+    current_value = str(current_value)
     output_equation()
+    output_number()
+    first_number = 0
 
-def plus_number():#เอา
+def equals_for_op(equal:str):#ก็คือกดปุป = จะขึ้นไปด้านบนสมการ แล้วก็คำตอบจะกลายร่างเป็นเครื่องหมายนั้นๆทำกัน
     global current_value
     global value_equation
+    global second_number
+    global first_number
+    global out_operator
+    second_number = eval(current_value)
+    value_equation = value_equation +current_value +equal#โอเคมันขึ้นแล้วแต่บวก ลบ คูณ หาร ยังไง วะ 
+    #ที่แน่ๆคือเราต้องแยกตัวเลข2ตัว นั้นชัวๆ ต้องทำยังไงละ
+    if out_operator == "+":
+        current_value = first_number + second_number
+    elif out_operator == "-":
+        current_value = first_number - second_number
+    elif out_operator == "*":
+        current_value = first_number * second_number
+    elif out_operator == "/":
+        current_value = first_number / second_number
+    
+    current_value = str(current_value)
+    print(f"form 2   {current_value}")
+    output_equation()
+    output_number()
 
-
+#เก็ทและไอฟังชั่น บวก ลบ คูณฯ หาร มันเอาฟังชั่น=มาใช้ก่อน
+def plus_number(plus:str):
+    equation_display(plus)
+    
+    
 
 app = ctk.CTk() #อันนี้คือสร้างหน้าwindowขึ้นมาใหม่
 app.geometry("1000x1000") #กำหนดขนาด
@@ -114,7 +228,7 @@ multiply = ctk.CTkButton(frame, text="*", fg_color="black", width=100, height=10
 multiply.grid(row=1, column = 4 , padx=5 ,pady=5)
 divide = ctk.CTkButton(frame, text="/", fg_color="black", width=100, height=100, font=("",40),command=lambda:equation_display("/"))
 divide.grid(row=2, column = 4 , padx=5 ,pady=5)
-equal = ctk.CTkButton(frame, text="=", fg_color="black", width=100, height=100, font=("",40),command=lambda:equation_display("="))
+equal = ctk.CTkButton(frame, text="=", fg_color="black", width=100, height=100, font=("",40),command=lambda:equals_number("="))
 equal.grid(row=0, column = 4 , padx=5 ,pady=5)
 
 

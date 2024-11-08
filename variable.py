@@ -62,4 +62,7 @@ print(False)
 #มันต้องเอา.2fมาใช้ด้วย
 
 test ="2+2"
-print(int(test))
+f = "-"
+d = 1
+c = 2 
+p = (d)+(c)
